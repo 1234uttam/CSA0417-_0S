@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+
+int main() {
+    int pid[4], i, j;
+
+    for(i = 0; i < 4; i++) {
+        pid[i] = fork();
+
+        if(pid[i] == 0) {
+            // Child process
+            switch(i) {
+                case 0: // Print odd numbers
+                    for(j = 1; j <= 10; j++) {
+                        if(j % 2 != 0) {
+                            printf("Odd number: %d (PID: %d)\n", j, getpid());
+                        }
+                    }
+                    break;
+                case 1: // Print even numbers
+                    for(j = 1; j <= 10; j++) {
+                        if(j % 2 == 0) {
+                            printf("Even number: %d (PID: %d)\n", j, getpid());
+                        }
+                    }
+                    break;
+                case 2: // Print multiples of 3
+                    for(j = 1; j <= 30; j++) {
+                        if(j % 3 == 0) {
+                            printf("Multiple of 3: %d (PID: %d)\n", j, getpid());
+                        }
+                    }
+                    break;
+                case 3: // Print multiples of 5
+                    for(j = 1; j <= 50; j++) {
+                        if(j % 5 == 0) {
+                            printf("Multiple of 5: %d (PID: %d)\n", j, getpid());
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            // Terminate child process
+            exit(0);
+        }
+    }
+
+    // Wait for child processes to terminate
+    for(i = 0; i < 4; i++) {
+        waitpid(pid[i], NULL, 0);
+    }
+
+    return 0;
+}
